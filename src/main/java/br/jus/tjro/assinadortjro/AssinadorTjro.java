@@ -10,15 +10,27 @@ import br.jus.tjro.applet.comuns.util.UIManagerUtils;
 import br.jus.tjro.assinadortjro.BaseAssinadorTjro;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-import javax.swing.*;
+import java.util.HashMap;
+import javax.swing.JApplet;
 
-public class AssinadorTjro extends JFrame {
+public class AssinadorTjro extends JApplet {
     private BaseAssinadorTjro assinadorApplet;
+    private HashMap<String,String> params= new HashMap<>();
 
     public AssinadorTjro() {
-        init();
+        params.put("uploadSignedFileTo", "http://localhost:4567/upload");
+        params.put("cookie", "JSESSIONID=ObOqfk5To8BBNiqUvfobTDDY.sdsg2.3");
+                params.put(        "onCompleteUploadSignedFile", "http://www.google.com");
+                params.put(       "usuario", "segundograu");
+                params.put(        "fileFilters", "RTF,PDF");
+                params.put(        "arquivo#0.nome" , "idoso.pdf");
+                params.put(        "arquivo#0.url" , "http://www.mpro.mp.br/documents/10180/493536/cartilha+idoso.pdf/7a162c2e-1784-4f07-973b-e5314c77ec7d");
     }
 
+
+    public String getParameter(String name) {
+        return params.get(name);
+    }
     public String addArquivoLocal() {
         return this.assinadorApplet.addArquivoLocal();
     }
@@ -52,15 +64,16 @@ public class AssinadorTjro extends JFrame {
     }
 
     public void init() {
-      //  super.init();
+        super.init();
         UIManagerUtils.configurarLookAndFeel();
         FileChooserUtils.traduzirFileChooser();
-//        AccessController.doPrivileged(new PrivilegedAction() {
-//            public Object run() {
-//                AssinadorTjro.this.assinadorApplet = new BaseAssinadorTjro(AssinadorTjro.this);
-//                return null;
-//            }
-//        });
+
+        AccessController.doPrivileged(new PrivilegedAction() {
+            public Object run() {
+                AssinadorTjro.this.assinadorApplet = new BaseAssinadorTjro(AssinadorTjro.this);
+                return null;
+            }
+        });
     }
 
     public void mostrarConfiguracao() {

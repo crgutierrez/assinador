@@ -132,6 +132,7 @@ public class BaseAssinadorTjro implements AssinadorProgresso, AssinadorLog {
             this.atualizarInterface();
         } catch (Exception var5) {
             log.error(var5);
+            var5.printStackTrace();
             JFrameUtils.showErro("Erro na inicialização da configuração", "Erro: " + var5.getMessage());
         }
 
@@ -686,11 +687,13 @@ public class BaseAssinadorTjro implements AssinadorProgresso, AssinadorLog {
 
             this.imprimirLogEhProgresso("Assinatura concluída.");
             this.fecharBarraProgresso();
-            if(((Boolean)this.getConfigs().getDevelopment().getValue()).booleanValue()) {
+            JFrameUtils.showInfo("Concluido", "Assinatura digital efetuada com sucesso!", (Component) null);
+        /*    if(((Boolean)this.getConfigs().getDevelopment().getValue()).booleanValue()) {
                 JFrameUtils.showInfo("Concluido", "Assinatura digital efetuada com sucesso!", (Component)null);
             } else {
-                this.getApplet().getAppletContext().showDocument((URL)this.getConfigs().getOnCompleteUploadSignedFile().getValue());
-            }
+                return;
+              //  this.getApplet().getAppletContext().showDocument((URL)this.getConfigs().getOnCompleteUploadSignedFile().getValue());
+            }*/
 
             return;
         }
