@@ -32,8 +32,7 @@ public class HelloWorld {
     final static FileInputStream finalFileInputStream ;
     public static void main(String[] args) {
         new TrayIconBuild().tray();
-
-
+        ipAddress("127.0.0.1");
 
 
         AssinadorTjro display = new AssinadorTjro();
@@ -58,7 +57,6 @@ public class HelloWorld {
             res.header("Access-Control-Allow-Methods","*");
            // res.header("Access-Control-Allow-Origin", "http://172.10.0.183:9000");
 
-            //JOptionPane.showInputDialog("teste");
 
 //                    calc.setVisible(true);
             res.status(200);
@@ -81,14 +79,15 @@ public class HelloWorld {
 
 
             res.status(200);
-            display.setVisible(true);
-            calc.setAlwaysOnTop(true);
+           // display.setVisible(true);
+            //calc.setAlwaysOnTop(true);
 
             calc.requestFocus();
 
-            display.addArquivoLocal();
+
             display.requestFocus();
             calc.toFront();
+            display.addArquivoLocal();
             return IOUtils.toByteArray(finalFileInputStream);
 
         });
@@ -106,6 +105,23 @@ public class HelloWorld {
 
 
         post("/upload", new Route(){
+            @Override
+            public Object handle(Request request, Response response) throws Exception {
+
+                MultipartConfigElement multipartConfigElement = new MultipartConfigElement("/tmp");
+                request.raw().setAttribute("org.eclipse.jetty.multipartConfig", multipartConfigElement);
+
+                Part part = request.raw().getPart("arquivo");
+
+                final Path path = Paths.get("/Users/cristianogutierrez/Documents/"+part.getSubmittedFileName());
+                try (final InputStream in = part.getInputStream()) {
+                    Files.copy(in, path);
+                }
+
+                return "OK";
+            }
+        });
+        post("/upload2", new Route(){
             @Override
             public Object handle(Request request, Response response) throws Exception {
 
