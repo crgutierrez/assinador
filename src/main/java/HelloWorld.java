@@ -19,7 +19,7 @@ import static spark.Spark.*;
 
 public class HelloWorld {
 
-
+     static byte[] imagem;
     static {
         FileInputStream fileInputStream = null;
         try {
@@ -28,11 +28,17 @@ public class HelloWorld {
             e.printStackTrace();
         }
         finalFileInputStream = fileInputStream;
+        try {
+            imagem = IOUtils.toByteArray(fileInputStream);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
     final static FileInputStream finalFileInputStream ;
+
     public static void main(String[] args) {
         new TrayIconBuild().tray();
-        ipAddress("127.0.0.1");
+       // ipAddress("127.0.0.1");
 
 
         AssinadorTjro display = new AssinadorTjro();
@@ -67,7 +73,7 @@ public class HelloWorld {
             display.requestFocus();
             calc.toFront();
 
-            return IOUtils.toByteArray(finalFileInputStream);
+            return imagem;
 
         });
         get("/add.gif", (req, res) -> {
@@ -82,13 +88,17 @@ public class HelloWorld {
            // display.setVisible(true);
             //calc.setAlwaysOnTop(true);
 
-            calc.requestFocus();
+          //  calc.requestFocus();
 
 
-            display.requestFocus();
-            calc.toFront();
-            display.addArquivoLocal();
-            return IOUtils.toByteArray(finalFileInputStream);
+         //   display.requestFocus();
+         //   calc.toFront();Runnable task1 = new Runnable(){
+
+                display.addArquivoLocal();
+
+
+
+            return imagem;
 
         });
         get("/assinar.gif", (req, res) -> {
@@ -99,7 +109,19 @@ public class HelloWorld {
             res.status(200);
 
             display.assinarArquivos();
-            return IOUtils.toByteArray(finalFileInputStream);
+
+            return imagem;
+
+        });
+        get("/show.gif", (req, res) -> {
+            res.header("content-type", "image/gif");
+            res.header("Access-Control-Allow-Origin", "*");
+            res.header("Access-Control-Request-Headers","*");
+            res.header("Access-Control-Allow-Methods","*");
+            res.status(200);
+                display.setVisible(true);
+
+            return imagem;
 
         });
 
@@ -111,11 +133,19 @@ public class HelloWorld {
                 MultipartConfigElement multipartConfigElement = new MultipartConfigElement("/tmp");
                 request.raw().setAttribute("org.eclipse.jetty.multipartConfig", multipartConfigElement);
 
-                Part part = request.raw().getPart("arquivo");
-
-                final Path path = Paths.get("/Users/cristianogutierrez/Documents/"+part.getSubmittedFileName());
-                try (final InputStream in = part.getInputStream()) {
-                    Files.copy(in, path);
+                Part part = null;
+                try {
+                    part = request.raw().getPart("arquivo");
+                    final Path path = Paths.get("/Users/cristianogutierrez/Documents/"+part.getSubmittedFileName());
+                    try (final InputStream in = part.getInputStream()) {
+                        Files.copy(in, path);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    return "Erro:"+e.getMessage();
+                } catch (ServletException e) {
+                    e.printStackTrace();
+                    return "Erro:"+e.getMessage();
                 }
 
                 return "OK";
@@ -123,17 +153,27 @@ public class HelloWorld {
         });
         post("/upload2", new Route(){
             @Override
-            public Object handle(Request request, Response response) throws Exception {
+            public Object handle(Request request, Response response)  {
 
                 MultipartConfigElement multipartConfigElement = new MultipartConfigElement("/tmp");
                 request.raw().setAttribute("org.eclipse.jetty.multipartConfig", multipartConfigElement);
 
-                Part part = request.raw().getPart("arquivo");
-
-                final Path path = Paths.get("/Users/cristianogutierrez/Documents/"+part.getSubmittedFileName());
-                try (final InputStream in = part.getInputStream()) {
-                    Files.copy(in, path);
+                Part part = null;
+                try {
+                    part = request.raw().getPart("arquivo");
+                    final Path path = Paths.get("/Users/cristianogutierrez/Documents/"+part.getSubmittedFileName());
+                    try (final InputStream in = part.getInputStream()) {
+                        Files.copy(in, path);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    return "Erro:"+e.getMessage();
+                } catch (ServletException e) {
+                    e.printStackTrace();
+                    return "Erro:"+e.getMessage();
                 }
+
+
 
                 return "OK";
             }

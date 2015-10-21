@@ -229,8 +229,7 @@ public class BaseAssinadorTjro implements AssinadorProgresso, AssinadorLog {
     }
 
     private boolean addArquivoLocalAction(final String params) {
-        return ((Boolean)AccessController.doPrivileged(new PrivilegedAction() {
-            public Object run() {
+
                 try {
                     JFileChooser e = new JFileChooser();
                     e.setDialogTitle("Selecione...");
@@ -273,11 +272,60 @@ public class BaseAssinadorTjro implements AssinadorProgresso, AssinadorLog {
                         return Boolean.TRUE;
                     }
                 } catch (Exception var9) {
+                    var9.printStackTrace();
                     JFrameUtils.showErro("Erro ao adicionar um arquivo", "Erro: " + var9.getMessage());
                     return Boolean.FALSE;
                 }
-            }
-        })).booleanValue();
+
+//        return ((Boolean)AccessController.doPrivileged(new PrivilegedAction() {
+//            public Object run() {
+//                try {
+//                    JFileChooser e = new JFileChooser();
+//                    e.setDialogTitle("Selecione...");
+//                    e.setMultiSelectionEnabled(((Boolean)BaseAssinadorTjro.this.getConfigs().getSelectionMultiple().getValue()).booleanValue());
+//                    e.setFileSelectionMode(((Integer)BaseAssinadorTjro.this.getConfigs().getSelectionMode().getValue()).intValue());
+//                    if(BaseAssinadorTjro.this.getConfigs().getFileFilters().isDeclarado()) {
+//                        e.setAcceptAllFileFilterUsed(false);
+//                        List retorno = (List)BaseAssinadorTjro.this.getConfigs().getFileFilters().getValue();
+//                        Iterator selected = retorno.iterator();
+//
+//                        while(selected.hasNext()) {
+//                            FileNameExtensionFilter selectedFiles = (FileNameExtensionFilter)selected.next();
+//                            e.addChoosableFileFilter(selectedFiles);
+//                        }
+//
+//                        e.setFileFilter((FileFilter)retorno.get(0));
+//                    }
+//
+//                    int var10 = e.showOpenDialog((Component)null);
+//                    if(var10 != 0) {
+//                        return Boolean.FALSE;
+//                    } else {
+//                        File[] var11 = (File[])null;
+//                        if(((Boolean)BaseAssinadorTjro.this.getConfigs().getSelectionMultiple().getValue()).booleanValue()) {
+//                            var11 = e.getSelectedFiles();
+//                        } else {
+//                            var11 = new File[]{e.getSelectedFile()};
+//                        }
+//
+//                        File[] var7 = var11;
+//                        int var6 = var11.length;
+//
+//                        for(int var5 = 0; var5 < var6; ++var5) {
+//                            File var12 = var7[var5];
+//                            ArquivoItemLocal arquivo = new ArquivoItemLocal(var12);
+//                            arquivo.setAtributos(ArquivoAtributoUtils.processar(params, BaseAssinadorTjro.this.getConfigs().getArquivoItens().getAtributos()));
+//                            BaseAssinadorTjro.this.addArquivoItem(arquivo);
+//                        }
+//
+//                        return Boolean.TRUE;
+//                    }
+//                } catch (Exception var9) {
+//                    JFrameUtils.showErro("Erro ao adicionar um arquivo", "Erro: " + var9.getMessage());
+//                    return Boolean.FALSE;
+//                }
+//            }
+//        })).booleanValue();
     }
 
     public void addArquivoRemoto(String arquivoNome, String url) {
@@ -514,7 +562,19 @@ public class BaseAssinadorTjro implements AssinadorProgresso, AssinadorLog {
     }
 
     public void mostrarConfiguracao() {
-        this.assinador.mostrarConfiguracao();
+        Runnable task1 = new Runnable(){
+
+            @Override
+            public void run(){
+                System.out.println("Task #1 is running");
+                assinador.mostrarConfiguracao();
+            }
+        };
+
+
+        Thread thread1 = new Thread(task1);
+        thread1.start();
+
     }
 
     public void visualizarArquivoSelecionado() {
