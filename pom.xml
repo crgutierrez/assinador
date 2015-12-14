@@ -10,7 +10,8 @@
     <project.build.sourceEncocing>UTF-8</project.build.sourceEncocing>
 </properties>
 
-    <build>
+    
+<build>
     <plugins>
     <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
